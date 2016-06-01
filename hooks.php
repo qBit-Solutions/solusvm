@@ -23,7 +23,6 @@
 
 		if($service->product->module == 'solusvm')
 		{
-
 	    }
 	}
 
