@@ -93,7 +93,30 @@
 		public function _api()
 		{
 		}
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *   Log messages and traces into system debug module log
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		public function _log( $ACTION , $REQUEST = NULL, $RESPONSE = NULL, $ERROR = NULL, $MESSAGE = '') 
+		{
+			// DETERMINE LOG INPUT
+			$message = ($ERROR !== NULL && $MESSAGE == '')? $ERROR->getMessage() : $MESSAGE;
+			// check resposne 
+			$response = ($ERROR !== NULL && $RESPONSE == NULL )? $ERROR->getTraceAsString() : $RESPONSE;
 
+			logModuleCall // Record the error in WHMCS's module log.
+			(
+				'SolusVM',
+				$ACTION,
+				$REQUEST,
+				$message,
+				$response
+			);
+
+			// return error 
+			return $ERROR->getMessage();
+		}
 	}
 
 /*
