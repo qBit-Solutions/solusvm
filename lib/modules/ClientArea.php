@@ -14,10 +14,28 @@
 		// main sub module execution
 		function _exec( $INPUT )
 		{
-			return array
-			(
-				'tabOverviewReplacementTemplate' => 'templates/overview.tpl',
-				'templateVariables' => array()
-			);
+			try
+			{
+				return array
+				(
+					'tabOverviewReplacementTemplate' => 'templates/overview.tpl',
+					'templateVariables' => array()
+				);
+				
+			} catch ( Exception $error )
+			{
+				// log the error
+				$this->_log( 'Template Error', $INPUT, NULL, $error );
+
+				// return failback custom error 
+				return array
+				(
+					'tabOverviewReplacementTemplate' => 'error.tpl',
+					'templateVariables' => array
+					(
+						'usefulErrorHelper' => $eror->getMessage()
+					)
+				);
+			}
 		}
 	}
