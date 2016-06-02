@@ -14,5 +14,10 @@
 		// main sub module execution
 		function _exec( $INPUT )
 		{
+			return array
+			(
+				'tabOverviewReplacementTemplate' => 'templates/overview.tpl',
+				'templateVariables' => array()
+			);
 		}
 	}
