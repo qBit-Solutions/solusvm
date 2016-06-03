@@ -9,6 +9,9 @@
  * @author		Trajche Petrov
  * @link		https://qbit.solutions/
 */
+	// load new WHMCS database manager
+	use Illuminate\Database\Capsule\Manager as Capsule;
+
 	class SolusVM
 	{
 /*
@@ -24,6 +27,9 @@
 */
 		function __construct( $INIT = false )
 		{
+			// share database conection between submodules
+			$this->_db = Capsule::connection();
+
 			if( $INIT ) // run this only once
 			{
 				// scan for additional modules
