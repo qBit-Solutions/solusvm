@@ -93,6 +93,83 @@
 		public function _api()
 		{
 		}
+
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *  Fetch data from remote location 
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		private function _get_data( $DATA )
+		{
+			// sanitize input url
+			$URL = trim(strtok($DATA['url'],"\n"));
+
+			// initialize curl connection
+			$conn = curl_init();
+
+			// define default curl options
+			$options = array
+			(
+				CURLOPT_URL => $URL,
+
+				CURLOPT_HEADER => true,
+				CURLINFO_HEADER_OUT => true,
+				CURLOPT_FRESH_CONNECT => true,
+
+				CURLOPT_CONNECTTIMEOUT => 60,
+
+				CURLOPT_VERBOSE => true,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_FOLLOWLOCATION => true,
+
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_SSL_VERIFYHOST => false,
+
+				CURLOPT_HTTPHEADER => array // set default request headers 
+				(
+					'user_agent'	=> 'User-Agent: SolusVM WHMCS API reader',
+					'expect'		=> 'Expect:'
+				)
+			);
+
+			if(isset($DATA['post']) && !empty($DATA['post'])) // send post data 
+			{
+				$options[CURLOPT_POST] =  true;
+				$options[CURLOPT_POSTFIELDS] = http_build_query($DATA['post']);
+			}
+			
+			// send the options to curl
+			curl_setopt_array ($conn,$options);
+
+			// GET OUTPUT DATA
+			$output['data']	= curl_exec($conn);
+
+
+			// RETRY TO FETCH DATA ON TIMEOUT 
+			$retries = (isset($DATA['timeout_retries']))? $DATA['timeout_retries'] : 3; // determine the number of retries 
+
+			while( curl_errno($conn) == 28 && $retry = __( $retry,  $retries) )
+			{
+				sleep(5*$retry); // wait for N seconds 
+				$output['data']	= curl_exec($conn);
+			}
+
+			// SET OUTPUT DATA 
+			$output['error_code']		= curl_errno($conn);
+			$output['response']			= curl_getinfo($conn);
+			$output['response_code']	= $output['response']['http_code'];
+			$output['response_header']	= substr($output['data'] , 0, $output['response']['header_size']);
+
+			// separate response data from headers and decode it 
+			$output['data'] = json_decode(substr($output['data'],$output['response']['header_size']));
+
+			//To-Do: Handle empty data responses 
+
+			// close the connection
+			curl_close($conn);
+
+			return $output;
+		}
 /*
  * ---------------------------------------------------------------------------------------------------------------------
  *   Log messages and traces into system debug module log
