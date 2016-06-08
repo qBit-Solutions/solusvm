@@ -19,7 +19,7 @@
  *  Define Public/Private variables
  * ---------------------------------------------------------------------------------------------------------------------
 */
-
+		private $debug = false;
 /*
  * ---------------------------------------------------------------------------------------------------------------------
  *  Preset CORE variables and init modular enviroment
@@ -29,6 +29,9 @@
 		{
 			// share database conection between submodules
 			$this->_db = Capsule::connection();
+
+			// preconfigure debug options
+			$this->_debug();
 
 			if( $INIT ) // run this only once
 			{
@@ -199,6 +202,20 @@
 
 			// return error 
 			return $ERROR->getMessage();
+		}
+
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *  Enable disable PHP error reporting and debug logging
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		private function _debug()
+		{
+			if( $this->debug )
+			{
+				ini_set('display_errors', '1');
+				error_reporting(E_ALL);
+			}
 		}
 	}
 
