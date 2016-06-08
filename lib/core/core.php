@@ -28,7 +28,7 @@
 		function __construct( $INIT = false )
 		{
 			// share database conection between submodules
-			$this->_db = Capsule::connection();
+			$this->_db = Capsule::connection()->getPdo();
 
 			// preconfigure debug options
 			$this->_debug();
