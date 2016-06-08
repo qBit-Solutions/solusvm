@@ -10,10 +10,11 @@
  * @link		https://qbit.solutions/
 */
 	class SolusVM_ConfigOptions extends SolusVM
-	{
-
+	{	
 		function _exec()
 		{
+			$this->_init_module();
+
 			$options = array
 			(
 				"master" => array 
@@ -109,6 +110,35 @@
 			);
 
 			return $options;
+		}
+
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *  Initalize module server enviroment only on first run ( create DB tables etc.. )
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		function _init_module()
+		{
+			$this->_db->beginTransaction();
+
+			try {
+
+				$table = $this->_db->query("SELECT 1 FROM mod_solusvm LIMIT 1");
+			}
+			catch( Exception $error ) {
+
+				// create module tables
+				$this->_db->query
+				("	
+					CREATE TABLE IF NOT EXISTS `mod_solusvm` (
+					`id` int(11) NOT NULL AUTO_INCREMENT,
+					`service_id` int(11) NOT NULL,
+					`vm_id` int(11) NOT NULL,
+					PRIMARY KEY (`id`),
+					KEY `service_id` (`service_id`,`vm_id`)
+					) AUTO_INCREMENT=1 ;
+				");
+			}
 		}
 
 	}
