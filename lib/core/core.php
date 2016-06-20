@@ -20,6 +20,8 @@
  * ---------------------------------------------------------------------------------------------------------------------
 */
 		private $debug = false;
+
+		public $input;
 /*
  * ---------------------------------------------------------------------------------------------------------------------
  *  Preset CORE variables and init modular enviroment
@@ -27,11 +29,10 @@
 */
 		function __construct( $INIT = false )
 		{
-			// share database conection between submodules
-			$this->_db = Capsule::connection()->getPdo();
-
 			// preconfigure debug options
 			$this->_debug();
+			// share database conection between submodules
+			$this->_db = Capsule::connection()->getPdo();
 
 			if( $INIT ) // run this only once
 			{
@@ -76,7 +77,13 @@
 			if( isset($this->$METHOD) )
 			{
 				if( is_callable( array($this->$METHOD,'_exec') ))
+				{
+					// pass input for future refenece in the main scope.
+					$this->{$METHOD}->input = $INPUT[0];
+
+					// return the output
 					return $this->{$METHOD}->_exec($INPUT[0]);
+				}
 				else
 					throw new Exception("The requested method: $METHOD can't be executed.");
 			}
@@ -193,7 +200,7 @@
 
 			logModuleCall // Record the error in WHMCS's module log.
 			(
-				'SolusVM',
+				get_class($this),
 				$ACTION,
 				$REQUEST,
 				$message,
