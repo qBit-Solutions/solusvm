@@ -134,8 +134,10 @@
 					`id` int(11) NOT NULL AUTO_INCREMENT,
 					`service_id` int(11) NOT NULL,
 					`vm_id` int(11) NOT NULL,
+					`options` text,
 					PRIMARY KEY (`id`),
-					KEY `service_id` (`service_id`,`vm_id`)
+					KEY `service_id` (`service_id`),
+					KEY `vm_id` (`vm_id`)
 					) AUTO_INCREMENT=1 ;
 				");
 			}
