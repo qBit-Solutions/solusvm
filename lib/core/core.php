@@ -178,11 +178,22 @@
 */
 		private function _get_api_url()
 		{
+			$master = $this->_get_master_url(); // get master location
+
+			return "$master/api/admin/command.php";
+		}
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *  Generate MASTER Node access URL
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		public function _get_master_url()
+		{
 			// define HTTP protocol 
 			$protocol = ($this->input['serversecure'] == 'on') ? 'https' : 'http';
 
 			// return api URL @To-Do: consider adding option for client requests only
-			return "$protocol://{$this->input['serverhostname']}:{$this->input['serverport']}/api/admin/command.php";
+			return "$protocol://{$this->input['serverhostname']}:{$this->input['serverport']}";
 		}
 
 /*
