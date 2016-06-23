@@ -81,6 +81,9 @@
 					// pass input for future refenece in the main scope.
 					$this->{$METHOD}->input = $INPUT[0];
 
+					// set VM ID in the global input
+					$this->_set_vmid( $METHOD );
+
 					// return the output
 					return $this->{$METHOD}->_exec($INPUT[0]);
 				}
@@ -101,6 +104,34 @@
 			return str_replace('solusvm','SolusVM',$METHOD);
 		}
 
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *  Load VPS ID & custom options and store them into the global scope
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		private function _set_vmid( $METHOD )
+		{
+			if(isset($this->{$METHOD}->input['serviceid']) and $METHOD != 'SolusVM_MetaData')
+			{
+				if(!isset($this->vm_id))
+				{
+					// Get VPS information
+					$query = $this->_db->query("SELECT * FROM mod_solusvm WHERE `service_id` = '{$this->{$METHOD}->input['serviceid']}' LIMIT 1");
+					$vps = $query->fetchObject();
+
+					$this->vm_id 		= @$vps->vm_id;
+					$this->vm_options 	= @json_decode($vps->options); // decode VPS options in usable format
+					
+					// check if the service ID have recodr in the solusvm table
+					if(!isset($vps->vm_id))
+						$this->_log( __FUNCTION__ , 'Can\'t find VPS ID into database', $this->{$METHOD}->input);
+				}
+
+				// pass the info into the global scope
+				$this->{$METHOD}->input['vm_id'] = $this->vm_id;
+				$this->{$METHOD}->input['vm_options'] = $this->vm_options;
+			}
+		}
 /*
  * ---------------------------------------------------------------------------------------------------------------------
  *  Validate input request 
