@@ -134,11 +134,77 @@
 		}
 /*
  * ---------------------------------------------------------------------------------------------------------------------
- *  Validate input request 
+ *  Send API requests to SolusVM master node
  * ---------------------------------------------------------------------------------------------------------------------
 */
-		public function _api()
+		public function _api( $POST = array() )
 		{
+			try
+			{
+				if(!empty($POST))
+				{
+					$url = $this->_get_api_url();
+
+					// set API authentication fields
+					$POST['id'] = $this->input['serverusername'];
+					$POST['key'] = $this->input['serverpassword'];
+
+					// process API responses in JSON
+					$POST['rdtype'] = 'json';
+
+					// fetch API data
+						$api = $this->_get_data(array
+						(
+							'url' 	=> $url,
+							'post'	=> $POST
+						));
+
+						if($this->_handle_api_response($api))
+							return $api['data'];
+				}
+				else
+					throw new Exception("Can't send empty API request");
+
+			} catch (Exception $error ) {
+				$this->_log( __FUNCTION__, $POST, $api, $error );
+			}
+
+		}
+
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *  Form API url
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		private function _get_api_url()
+		{
+			// define HTTP protocol 
+			$protocol = ($this->input['serversecure'] == 'on') ? 'https' : 'http';
+
+			// return api URL @To-Do: consider adding option for client requests only
+			return "$protocol://{$this->input['serverhostname']}:{$this->input['serverport']}/api/admin/command.php";
+		}
+
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ *  Handle API response handle errors etc.. 
+ * ---------------------------------------------------------------------------------------------------------------------
+*/
+		private function _handle_api_response( $RESPONSE )
+		{
+			// hanlde connection timeout and other transport errors
+			if( $RESPONSE['error_code'] != 0 )
+				throw new Exception("Some connection error occured");
+
+			// handle HTTP errors
+			if( $RESPONSE['response']['http_code'] != 200 )
+				throw new Exception("Invalid HTTP response was returned");
+
+
+			if( !is_object($RESPONSE['data']) )
+				throw new Exception("Mailformed API response was received");
+
+			return true;
 		}
 
 /*
