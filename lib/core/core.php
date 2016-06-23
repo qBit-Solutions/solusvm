@@ -208,7 +208,7 @@
 			);
 
 			// return error 
-			return $ERROR->getMessage();
+			return $message;
 		}
 
 /*
