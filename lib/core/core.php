@@ -40,7 +40,7 @@
 				foreach(glob(_SOLUSVM_ROOT."/lib/modules/*.php") as $file )
 				{
 					// determine classname based on it's filename
-					$class_name = 'SolusVM_'.str_replace('.php','',end(explode('/',$file)));
+					$class_name = 'SolusVM_'.str_replace('.php','', @end(explode('/',$file)));
 
 					if(!class_exists($class_name)) // check if class exists & if ! load it
 					{
