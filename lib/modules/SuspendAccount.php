@@ -17,7 +17,7 @@
 			{
 				// check if the VPS is into the module database
 				if(!$this->input['vm_id'])
-					throw new  Exception("Can't find VPS ID into module database'");
+					throw new  Exception("Can't find VPS ID into module database");
 
 				// try to fetch client login keys
 				$suspend = $this->_api(array
