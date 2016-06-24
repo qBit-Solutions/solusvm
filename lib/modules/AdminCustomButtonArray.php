@@ -16,10 +16,6 @@
 			return array
 			(
 				// BUTTON LABEL     => BUTTON FUNCTION 
-				"TUN-TAP ON/OFF" 	=> "TUN",
-				"PPP ON/OFF" 		=> "PPP",
-				"Reset Bandwidth"	=> "resetBW",
-				"Update Hostname" 	=> "change_hostname",
 			);
 		}
 	}
