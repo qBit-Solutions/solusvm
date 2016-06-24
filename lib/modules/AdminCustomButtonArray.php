@@ -16,6 +16,7 @@
 			return array
 			(
 				// BUTTON LABEL     => BUTTON FUNCTION 
+				"Update Hostname"	=> 'Update_Hostname'
 			);
 		}
 	}
