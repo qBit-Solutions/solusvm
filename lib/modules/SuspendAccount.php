@@ -13,9 +13,12 @@
 	{
 		function _exec()
 		{
-			// check if the VPS is into the module database
-			if($this->input['vm_id'])
+			try 
 			{
+				// check if the VPS is into the module database
+				if(!$this->input['vm_id'])
+					throw new  Exception("Can't find VPS ID into module database'");
+
 				// try to fetch client login keys
 				$suspend = $this->_api(array
 				(
@@ -23,14 +26,19 @@
 					'vserverid' => $this->input['vm_id']
 				));
 
+				// validate API response
 				if($suspend->status == 'success')
 					return 'success';
 				elseif(!is_object($suspend) or !isset($suspend))
-					return 'Some API transport error occured please check module debug log!';
+					throw new  Exception("Some API transport error occured please check module debug log!");
 				else
-					return $suspend->statusmsg;
+					throw new  Exception($suspend->statusmsg);
+
+			} catch ( Exception $error ) {
+				// log the errors
+				$this->_log( 'SuspendAccount', $this->input, $suspend, $error );
+
+				return $error->getMessage();
 			}
-			else
-				return 'Can\'t find VPS ID into module database';
 		}
 	}
