@@ -13,21 +13,29 @@
 	{
 		function _exec( $INPUT )
 		{
-			// fetch simple information from the API to check the connection
-			$check = $this->_api(array
-			(
-				'action' => 'listnodegroups'
-			));
-
-			// handle connection testing
-			if(isset($check) and is_object($check))
+			try 
 			{
-				if($check->status == 'success')
-					return array('success' => true);
+				// fetch simple information from the API to check the connection
+				$check = $this->_api(array
+				(
+					'action' => 'listnodegroups'
+				));
+
+				// handle connection testing
+				if(isset($check) and is_object($check))
+				{
+					if($check->status == 'success')
+						return array('success' => true);
+					else
+						throw new  Exception($check->statusmsg);
+				}
 				else
-					return array( 'sucess' => false, 'error' => $check->statusmsg );
+					throw new  Exception('Recieved emtpy or mailformed response. Check module log for more information!');
+			} catch ( Exception $error ) {
+				// log the errors
+				$this->_log( 'Connection_Test', $this->input, $check, $error );
+
+				return array('success' => false, 'error' => $error->getMessage());
 			}
-			else
-				return array('success' => false, 'error' => 'Recieved emtpy or mailformed response. Check module log for more information!');
 		}
 	}
