@@ -2,7 +2,7 @@
 /*
  * SolusVM TestConnection
  *
- * Test connection with the MASTER SolusVM node and display any errors
+ * Test connection with the MASTER SolusVM node and display / log any errors
  *
  * @package		SolusVM
  * @category	WHMCS Provisioning Modules
@@ -11,7 +11,7 @@
 */
 	class SolusVM_TestConnection extends SolusVM
 	{
-		function _exec( $INPUT )
+		function _exec()
 		{
 			try 
 			{
