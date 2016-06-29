@@ -127,7 +127,7 @@
 			}
 			catch( Exception $error ) {
 
-				// create module tables
+				// create module service table
 				$this->_db->query
 				("	
 					CREATE TABLE IF NOT EXISTS `mod_solusvm` (
@@ -140,6 +140,18 @@
 					KEY `vm_id` (`vm_id`)
 					) AUTO_INCREMENT=1 ;
 				");
+
+				// create module users table
+				$this->_db->query
+				("	
+					CREATE TABLE IF NOT EXISTS `mod_solusvm_users` (
+					`user_id` int(11) NOT NULL,
+					`username` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+					PRIMARY KEY (`user_id`),
+					KEY `username` (`username`)
+					);
+				");
+
 			}
 		}
 
