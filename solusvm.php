@@ -22,6 +22,8 @@
  * ---------------------------------------------------------------------------------------------------------------------
 */
 	include_once( _SOLUSVM_ROOT.'/lib/core/common.php' );
+
+	include_once( _SOLUSVM_ROOT.'/lib/core/exceptions.php' );
 	
 	include_once( _SOLUSVM_ROOT.'/lib/core/core.php' );
 

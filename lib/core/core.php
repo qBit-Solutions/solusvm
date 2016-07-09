@@ -146,8 +146,8 @@
 					$url = $this->_get_api_url();
 
 					// set API authentication fields
-					$POST['id'] = $this->input['serverusername'];
-					$POST['key'] = $this->input['serverpassword'];
+					$POST['id'] = (isset($POST['id']))? $POST['id'] : $this->input['serverusername'];
+					$POST['key'] = (isset($POST['key']))? $POST['key'] : $this->input['serverpassword'];
 
 					// process API responses in JSON
 					$POST['rdtype'] = 'json';
